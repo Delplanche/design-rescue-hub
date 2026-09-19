@@ -4,15 +4,16 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.colors import HexColor
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.utils import ImageReader
-import subprocess, qrcode, io, textwrap
+from reportlab.graphics.barcode.qr import QrCodeWidget
+from reportlab.graphics.shapes import Drawing
+from reportlab.graphics import renderPDF
+import subprocess
 
 R=Path(__file__).resolve().parents[1]; OUT=R/'public/publicaties'; A=R/'src/assets'
 def fm(n): return subprocess.check_output(['fc-match','-f','%{file}',n],text=True).strip()
 for n,q in [('Serif','DejaVu Serif'),('SerifBold','DejaVu Serif:style=Bold'),('SerifItalic','DejaVu Serif:style=Italic'),('Sans','DejaVu Sans'),('SansBold','DejaVu Sans:style=Bold'),('Mono','DejaVu Sans Mono')]: pdfmetrics.registerFont(TTFont(n,fm(q)))
 P=HexColor('#fcfbf9'); I=HexColor('#242325'); W=HexColor('#8b1e2d'); M=HexColor('#6e6965'); L=HexColor('#c9c2b8')
 URL='https://id-preview--84584d8a-d5ba-4e77-9eb1-bbd28d3a0a8a.lovable.app/claims'
-q=qrcode.QRCode(box_size=8,border=1); q.add_data(URL); q.make(fit=True); b=io.BytesIO(); q.make_image(fill_color='#242325',back_color='#fcfbf9').convert('RGB').save(b,'PNG'); b.seek(0)
 
 def lines(c,text,x,y,width,size=10,leading=15,font='Sans',color=I,max_lines=None):
  c.setFont(font,size); c.setFillColor(color); words=text.split(); line=''; n=0
@@ -33,7 +34,8 @@ def title(c,w,h,num,kicker,title,deck='',label='EDITIE 01'):
  base(c,w,h,num,label);c.setFillColor(W);c.setFont('Mono',7);c.drawString(42,h-52,kicker)
  y=lines(c,title,42,h-92,w-84,31,31,'Serif',I)
  if deck:lines(c,deck,42,y-18,w-95,11,17,'SerifItalic',M)
-def qr(c,x,y,s=58):b.seek(0);c.drawImage(ImageReader(b),x,y,s,s)
+def qr(c,x,y,s=58):
+ widget=QrCodeWidget(URL); bounds=widget.getBounds(); scale=s/(bounds[2]-bounds[0]); drawing=Drawing(s,s,transform=[scale,0,0,scale,0,0]); drawing.add(widget); renderPDF.draw(drawing,c,x,y)
 
 def cover(c,w,h,title_,sub,artname):
  c.setFillColor(I);c.rect(0,0,w,h,fill=1,stroke=0);art(c,artname,w,h,w*.48,h*.33,min(w,h)*.7)

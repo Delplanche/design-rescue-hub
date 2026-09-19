@@ -27,7 +27,26 @@ export function SiteShell({ children }: { children: ReactNode }) {
       </nav>}
     </header>
     {children}
-    <footer className="archive-footer"><div className="footer-inner"><div><p className="footer-kicker">Onafhankelijke onderzoeks- en essaypublicatie</p><p className="footer-title">De Marktplaats van de Ziel</p><p>Feitelijk dossier: Achter het profiel · Editie 01 · Online correcties zijn leidend.</p></div><div><p className="footer-kicker">Auteur</p><p>Jona Zeno De Smet<br/><span>Delplanche</span></p></div><nav aria-label="Voetnavigatie"><Link to="/archief">Archief</Link><Link to="/claims">Claims</Link><Link to="/bronnen">Bronnen</Link><Link to="/methodologie">Methode</Link><a href="mailto:redactie@achterhetprofiel.nl">Correctie <ArrowUpRight/></a></nav></div><div className="footer-base"><span>Openbaar archief voor controle en debat</span><span>© 2026 Jona Zeno De Smet</span></div></footer>
+    <footer className="archive-footer">
+      <div className="footer-inner">
+        <section className="footer-project">
+          <p className="footer-kicker">Onafhankelijke onderzoeks- en essaypublicatie</p>
+          <p className="footer-title">De Marktplaats van de Ziel</p>
+          <p>Feitelijk dossier: Achter het profiel · Editie 01.</p>
+        </section>
+        <nav className="footer-sitemap" aria-label="Sitemap">
+          <p className="footer-kicker">Documentatie</p>
+          <Link to="/">Manifest</Link><Link to="/dossier">Dossier</Link><Link to="/boek">Boek</Link>
+          <Link to="/juridisch">Juridisch</Link><Link to="/archief">Archief</Link><Link to="/claims">Claimregister</Link>
+          <Link to="/bronnen">Bronnen</Link><Link to="/methodologie">Methode & correcties</Link>
+        </nav>
+        <section className="footer-colophon">
+          <p className="footer-kicker">Colofon</p>
+          <dl><div><dt>Auteur</dt><dd>Jona Zeno De Smet</dd></div><div><dt>Architectuur & Platform</dt><dd><a href="https://delplanche.com" target="_blank" rel="noreferrer">Delplanche <ArrowUpRight/></a><a href="https://delplanche.cloud" target="_blank" rel="noreferrer">delplanche.cloud <ArrowUpRight/></a></dd></div></dl>
+        </section>
+      </div>
+      <div className="footer-base"><span>© 2026 — Publiek archief voor controle en debat</span><span>Vrij verspreidbaar voor educatieve en onderzoeksdoeleinden</span></div>
+    </footer>
   </div>;
 }
 

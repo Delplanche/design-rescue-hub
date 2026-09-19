@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { EditorialPage, SectionLabel } from "@/components/editorial-page";
 import { StatusBadge } from "@/components/site-shell";
-import { chapters, claims } from "@/lib/dossier-data";
+import { chapters, claims, glossary } from "@/lib/dossier-data";
 
 export const Route = createFileRoute("/dossier/")({
   head: () => ({ meta: [
@@ -20,5 +20,6 @@ function DossierPage() {
     <aside className="evidence-note"><strong>Bewijsregel</strong><p>Onderzoek, getuigenis en onbevestigde hypothese krijgen elk een eigen status. De status is geen waarheidsscore.</p></aside>
     <section><SectionLabel>Zes hoofdstukken · vierentwintig onderzoeksdelen</SectionLabel><div className="chapter-list editorial-list">{chapters.map(c=><Link to="/dossier/$slug" params={{slug:c.slug}} className="chapter-item" key={c.slug}><span className="chapter-nr">{c.nr}</span><div><h2>{c.title}</h2><p>{c.deck}</p></div><span className="read-label">Lees <ArrowRight /></span></Link>)}</div></section>
     <section><SectionLabel>Stand van het bewijs</SectionLabel><div className="register-strip">{claims.map(c=><div key={c.id}><code>{c.id}</code><StatusBadge status={c.status}/><p>{c.title}</p></div>)}</div></section>
+    <section><SectionLabel>Begrippenapparaat</SectionLabel><dl className="glossary-grid">{glossary.map(([term,definition])=><div key={term}><dt>{term}</dt><dd>{definition}</dd></div>)}</dl></section>
   </EditorialPage>;
 }

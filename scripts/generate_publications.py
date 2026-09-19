@@ -38,10 +38,20 @@ def qr(c,x,y,s=58):
  widget=QrCodeWidget(URL); bounds=widget.getBounds(); scale=s/(bounds[2]-bounds[0]); drawing=Drawing(s,s,transform=[scale,0,0,scale,0,0]); drawing.add(widget); renderPDF.draw(drawing,c,x,y)
 
 def cover(c,w,h,title_,sub,artname):
- c.setFillColor(I);c.rect(0,0,w,h,fill=1,stroke=0);art(c,artname,w,h,w*.48,h*.33,min(w,h)*.7)
- c.setFillColor(P);c.setFont('Mono',7);c.drawString(42,h-48,'ONDERZOEK · ESSAY · ARCHIEF')
- y=lines(c,title_,42,h-108,w-84,34,34,'Serif',P);lines(c,sub,42,y-22,w-84,9,14,'Mono',W)
- c.setFont('Sans',8);c.setFillColor(P);c.drawString(42,42,'Jona Zeno De Smet');c.drawRightString(w-42,42,'Editie 01 · 19 september 2026');c.showPage()
+ c.setFillColor(P);c.rect(0,0,w,h,fill=1,stroke=0);art(c,artname,w,h,w*.43,h*.20,min(w,h)*.66)
+ c.setFillColor(W);c.setFont('Mono',7);c.drawString(42,h-48,'ONDERZOEK · ESSAY · ARCHIEF')
+ y=lines(c,title_,42,h-108,w-84,34,34,'Serif',I);lines(c,sub,42,y-22,w-84,9,14,'Mono',W)
+ c.setStrokeColor(W);c.setLineWidth(2);c.line(42,42,112,42)
+ c.setFont('Sans',8);c.setFillColor(I);c.drawString(124,39,'Jona Zeno De Smet');c.drawRightString(w-42,39,'Editie 01 · 19 september 2026');c.showPage()
+
+def divider(c,w,h,num,kicker,heading,deck,artname,dark=False,label='EDITIE 01'):
+ bg=I if dark else P; fg=P if dark else I; muted=HexColor('#c9c2b8') if dark else M
+ c.setFillColor(bg);c.rect(0,0,w,h,fill=1,stroke=0)
+ c.setFillColor(W);c.rect(42,h-58,58,3,fill=1,stroke=0);c.setFont('Mono',7);c.drawString(42,h-78,kicker)
+ y=lines(c,heading,42,h-120,w*.58,30,31,'Serif',fg)
+ lines(c,deck,42,y-20,w*.52,10.5,16,'SerifItalic',muted)
+ art(c,artname,w,h,w*.52,h*.10,min(w,h)*.47)
+ c.setStrokeColor(muted);c.line(38,30,w-38,30);c.setFillColor(muted);c.setFont('Mono',6.5);c.drawString(38,18,'DE MARKTPLAATS VAN DE ZIEL');c.drawCentredString(w/2,18,label);c.drawRightString(w-38,18,f'{num:02}')
 
 def text_page(c,w,h,num,kicker,heading,paras,artname=None,label='EDITIE 01'):
  title(c,w,h,num,kicker,heading,label=label);y=h-145
@@ -71,10 +81,11 @@ gloss=[('Agency','Organisatie die namens een creator commerciële of operationel
 
 def integral():
  w=h=595.28;c=canvas.Canvas(str(OUT/'de-marktplaats-van-de-ziel-editie-01.pdf'),pagesize=(w,h),pageCompression=1)
- cover(c,w,h,'De Marktplaats van de Ziel','ACHTER HET PROFIEL · INTEGRALE EDITIE','illustration-chat-funnel.png');n=2
+ cover(c,w,h,'De Marktplaats van de Ziel','ACHTER HET PROFIEL · INTEGRALE EDITIE','illustration-layered-archive.png');n=2
  title(c,w,h,n,'LEESWIJZER','Feit, duiding en voorstel blijven uit elkaar.','De website is leidend voor correcties. Onderzoek bevat controleerbare claims; essay bevat auteursduiding; voorstel bevat bespreekbare opties.');qr(c,w-105,55);c.showPage();n+=1
  for nr,head,deck,parts in research:
-  title(c,w,h,n,f'HOOFDSTUK {nr}',head,deck);art(c,['illustration-chat-funnel.png','illustration-human-machine.png','illustration-data-streams.png','illustration-data-architecture.png','illustration-human-machine.png','illustration-chat-funnel.png'][int(nr)-1],w,h,w*.50,h*.15,min(w,h)*.52);c.showPage();n+=1
+  artname=['illustration-layered-archive.png','illustration-conversation-layers.png','illustration-forensic-streams.png','illustration-boundaries-exit.png','illustration-layered-archive.png','illustration-boundaries-exit.png'][int(nr)-1]
+  divider(c,w,h,n,f'HOOFDSTUK {nr}',head,deck,artname,dark=int(nr)%2==0);c.showPage();n+=1
   for i,(sh,body) in enumerate(parts,1):n=text_page(c,w,h,n,f'{nr}.{i:02} · ONDERZOEK',sh,[('Vaststelling en grens',body)],label='EDITIE 01');c.showPage();n+=1
  title(c,w,h,n,'BEGRIPPENAPPARAAT','Taal die controle mogelijk maakt.');y=h-145
  for term,desc in gloss:c.setFillColor(W);c.setFont('SerifBold',11);c.drawString(42,y,term);y=lines(c,desc,165,y,w-207,8.5,12,'Sans',I);y-=10
@@ -83,26 +94,26 @@ def integral():
  for cid,st,cl,src in claims:c.setFont('Mono',7);c.setFillColor(W);c.drawString(42,y,cid);c.drawString(95,y,st);y=lines(c,cl,190,y,w-232,8.5,12,'Sans',I);c.setFillColor(M);c.setFont('Mono',6);c.drawString(190,y+2,src);y-=18
  c.showPage();n+=1
  for nr,head,body in essays:
-  n=text_page(c,w,h,n,f'ESSAY {nr}',head,[('Auteursduiding',body)],'illustration-human-machine.png' if nr=='03' else None);c.showPage();n+=1
+  n=text_page(c,w,h,n,f'ESSAY {nr}',head,[('Auteursduiding',body)],'illustration-conversation-layers.png' if nr=='03' else None);c.showPage();n+=1
  title(c,w,h,n,'MODELVOORSTEL','Lex Humanitas Digitalis','Identiteitstransparantie · dataminimalisatie · contractuele uitgang · controleerbaar toezicht. Concept, geen geldend recht.');qr(c,42,64);c.showPage();n+=1
  title(c,w,h,n,'COLOFON','Een vaste editie met een levend register.');lines(c,'Auteur: Jona Zeno De Smet\n',42,h-160,w-84,10,16,'Sans',I);lines(c,'Architectuur & Platform: Delplanche / delplanche.cloud',42,h-190,w-84,10,16,'Sans',I);lines(c,'© 2026 — Publiek archief voor controle en debat; vrij verspreidbaar voor educatieve en onderzoeksdoeleinden.',42,h-235,w-84,9,14,'Sans',M);qr(c,42,60);c.save()
 
 def whitepaper():
  w,h=A4;c=canvas.Canvas(str(OUT/'achter-het-profiel-whitepaper.pdf'),pagesize=A4,pageCompression=1)
- cover(c,w,h,'Achter het profiel','EXECUTIVE WHITEPAPER · ACHT BLADZIJDEN','illustration-data-architecture.png');n=2
+ cover(c,w,h,'Achter het profiel','EXECUTIVE WHITEPAPER · ACHT BLADZIJDEN','illustration-boundaries-exit.png');n=2
  pages=[('SAMENVATTING','De infrastructuur achter het profiel',[('Kern','De zichtbare één-op-één-interface kan worden ondersteund door teams, scripts en CRM-software. De centrale beleidsvraag is niet of ondersteuning mag bestaan, maar of identiteit, gegevensgebruik en belangen voldoende zichtbaar zijn.'),('Bewijsgrens','De bronnen tonen gedocumenteerde praktijken en aangeboden functionaliteit. Ze dragen geen sectorbrede schuldtoewijzing.')]),('VIJF LAGEN','Van interface naar verantwoordelijkheid',[('1 · Identiteit','Wie voert het gesprek: creator, medewerker of automatisering?'),('2 · Arbeid','Welke teams, roosters en scripts dragen de permanente beschikbaarheid?'),('3 · Data','Welke notities, segmenten en bestedingshistorie worden bewaard?'),('4 · Afhankelijkheid','Wie beheert toegang, inkomsten en overdraagbare archieven?'),('5 · Recht','Welke informatie beïnvloedt aankoop, privacy en platformzorgvuldigheid?')]),('STAND VAN HET BEWIJS','Zes claims, vier statussen',[(x[0]+' · '+x[1],x[2]+' — '+x[3]) for x in claims]),('DATA & CRM','Het geheugen als infrastructuur',[('Wat zichtbaar is','Commerciële software biedt notities, segmentatie, bestedingshistorie en massaberichten.'),('Wat niet bewezen is','Een systematische sectorbrede kwetsbaarheidsclassificatie is niet aangetoond.'),('Beleidsvraag','Kunnen gebruikers begrijpen welke gegevens worden afgeleid, met wie ze worden gedeeld en hoe lang ze blijven bestaan?')]),('RECHT','Bestaande kaders, concrete feiten',[('Consumentenrecht','Essentiële informatie mag niet zodanig worden verhuld dat zij een aankoopbesluit misleidt.'),('AVG','Doelbinding, minimale verwerking, grondslag, transparantie en rechten kunnen relevant zijn.'),('DSA','Platformplichten zijn relevant, maar betekenen geen automatische aansprakelijkheid voor iedere handeling.')]),('MODELVOORSTEL','Lex Humanitas Digitalis',[('Identiteitstransparantie','Maak bekend wie of wat communiceert.'),('Dataminimalisatie','Beperk intieme notities en maak bewaartermijnen zichtbaar.'),('Contractuele uitgang','Borg toegang tot accounts, data en inkomsten.'),('Controleerbaar toezicht','Maak audits en klachtenroutes werkelijk toetsbaar.')]),('AANBEVELING','Van stelling naar toets', [('Nu nodig','Gericht wederhoor, representatieve cijfers, onafhankelijke audits en inzage in concrete datastromen.'),('Lees verder','Scan het register voor actuele claimstatussen, bronnen en correcties.')])]
  for kick,head,parts in pages:
-  n=text_page(c,w,h,n,kick,head,parts,'illustration-data-streams.png' if n==3 else None,'WHITEPAPER');
+  n=text_page(c,w,h,n,kick,head,parts,'illustration-forensic-streams.png' if n==3 else None,'WHITEPAPER');
   if n==8:qr(c,w-105,55)
   c.showPage();n+=1
  c.save()
 
 def reader():
  w=h=595.28;c=canvas.Canvas(str(OUT/'de-commodificatie-van-de-ziel.pdf'),pagesize=(w,h),pageCompression=1)
- cover(c,w,h,'De Commodificatie van de Ziel','EEN POST-DIGITALE BOEK-READER','illustration-human-machine.png');n=2
+ cover(c,w,h,'De Commodificatie van de Ziel','EEN POST-DIGITALE BOEK-READER','illustration-conversation-layers.png');n=2
  title(c,w,h,n,'VOORAF','Dit boek interpreteert. Het dossier controleert.','De essays lezen de spanning tussen nabijheid, marktlogica en techniek. Feitelijke beweringen blijven verantwoord in Achter het profiel.');c.showPage();n+=1
  for nr,head,body in essays:
-  title(c,w,h,n,f'ESSAY {nr}',head);art(c,'illustration-data-streams.png' if nr in ('02','04') else 'illustration-human-machine.png',w,h,w*.5,h*.17,min(w,h)*.5);c.showPage();n+=1
+  divider(c,w,h,n,f'ESSAY {nr}',head,'Een literaire laag binnen het onderzoek. Interpretatie blijft herkenbaar gescheiden van feitelijke vaststelling.','illustration-forensic-streams.png' if nr in ('02','04') else 'illustration-conversation-layers.png',dark=int(nr)%2==0,label='BOEK-READER');c.showPage();n+=1
   n=text_page(c,w,h,n,'AUTEURSDUIDING',head,[('I',body),('II','De woorden blijven menselijk terwijl de omgeving meetbaar wordt. De vraag is welke ruimte overblijft voor twijfel, afwezigheid en een ontmoeting die niet onmiddellijk hoeft te renderen.'),('III','Een humane digitale cultuur toont haar tussenkomst, bewaart grenzen en laat de uitgang even zichtbaar als de ingang.')]);c.showPage();n+=1
  title(c,w,h,n,'SLOTBESCHOUWING','Post-digitaal manifest');lines(c,'Wij keren niet terug naar een wereld zonder techniek. Wij eisen een wereld waarin techniek haar tussenkomst toont; waarin een mens niet tot profiel, gesprek niet tot trechter en herinnering niet tot verkoopargument wordt gereduceerd.',42,h-165,w-84,15,23,'Serif',I);c.setStrokeColor(W);c.setLineWidth(4);c.line(42,h-285,42,h-365);lines(c,'Niet alles wat meetbaar is verdient een meter. Niet alles wat waarde heeft behoeft een prijs.',62,h-300,w-120,20,28,'SerifItalic',W);qr(c,w-105,55);c.showPage();n+=1
  title(c,w,h,n,'COLOFON','De Commodificatie van de Ziel');lines(c,'Auteur: Jona Zeno De Smet\nArchitectuur & Platform: Delplanche',42,h-165,w-84,10,16,'Sans',I);lines(c,'© 2026 — Publiek archief voor controle en debat; vrij verspreidbaar voor educatieve en onderzoeksdoeleinden.',42,h-235,w-84,9,14,'Sans',M);c.save()

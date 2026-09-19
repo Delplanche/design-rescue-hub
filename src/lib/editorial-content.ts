@@ -97,7 +97,7 @@ export const legalTests = [
 export const archivePublications = [
   { kind: "VOLLEDIGE EDITIE", title: "De Marktplaats van de Ziel", description: "Het integrale onderzoeks- en essaydossier met 24 onderzoeksdelen, boekhoofdstukken, begrippen, claims, bronnen en methodologie.", format: "21 × 21 cm", audience: "Onderzoek · archief", pages: "43 pagina’s", size: "2,8 MB", href: "/publicaties/de-marktplaats-van-de-ziel-editie-01.pdf" },
   { kind: "EXECUTIVE WHITEPAPER", title: "Achter het profiel — in acht bladzijden", description: "De kernproblematiek, bewijsgrenzen en Lex Humanitas Digitalis voor journalisten, beleidsmakers en onderzoekers.", format: "A4", audience: "Pers · beleid", pages: "8 pagina’s", size: "1,7 MB", href: "/publicaties/achter-het-profiel-whitepaper.pdf" },
-  { kind: "BOEK-READER", title: "De Commodificatie van de Ziel", description: "De zelfstandige literaire en filosofische leeseditie, afgesloten met het post-digititale manifest.", format: "21 × 21 cm", audience: "Essay · filosofie", pages: "18 pagina’s", size: "1,5 MB", href: "/publicaties/de-commodificatie-van-de-ziel.pdf" },
+  { kind: "BOEK-READER", title: "De Commodificatie van de Ziel", description: "De zelfstandige literaire en filosofische leeseditie, afgesloten met het post-digitale manifest.", format: "21 × 21 cm", audience: "Essay · filosofie", pages: "18 pagina’s", size: "1,5 MB", href: "/publicaties/de-commodificatie-van-de-ziel.pdf" },
 ] as const;
 
 export const archiveVersions = [
